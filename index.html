@@ -407,52 +407,52 @@ document.addEventListener('click', () => {
                 // AGGIUNTI CAMPI AUDIO PER OGNI RIGA DI DIALOGO (BRANCHES)
                 const BRANCHES = {
                         q1_a: [
-                                { text: "...Si, forse mi aiuterà un po'", pose: "img/Posa4.png", audio: "audio/risposte_cattive/(1)Si, forse mi aiutera un po'.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q1, Scelta A, Riga 1
-                                { text: "Character.ai, facciamo role-play!", pose: "img/Posa9.png", audio: "audio/risposte_cattive/(2)Facciamo un role play!.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q1, Scelta A, Riga 2
+                                { text: "...Si, forse mi aiuterà un po'", pose: "img/Posa4.png", audio: "audio/Risposte_cattive/(1)Si, forse mi aiutera un po'.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q1, Scelta A, Riga 1
+                                { text: "Character.ai, facciamo role-play!", pose: "img/Posa9.png", audio: "audio/Risposte_cattive/(2)Facciamo un role play!.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q1, Scelta A, Riga 2
                         ],
                         q1_b: [
-                                { text: "Ugh, mi gira la testa!", pose: "img/Posa3.png", audio: "audio/risposte_buone/(1)Ugh.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q1, Scelta B, Riga 1
-                                { text: "...", pose: "img/Posa4.png", audio: "audio/risposte_buone/(2)pausa.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q1, Scelta B, Riga 2
+                                { text: "Ugh, mi gira la testa!", pose: "img/Posa3.png", audio: "audio/Risposte_buone/(1)Ugh.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q1, Scelta B, Riga 1
+                                { text: "...", pose: "img/Posa4.png", audio: "audio/Risposte_buone/(2)pausa.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q1, Scelta B, Riga 2
                         ],
                         q2_a: [
-                                { text: " Si, mi piace quando parliamo!", pose: "img/Posa8.png", audio: "audio/risposte_cattive/(3)Si, mi piace quando parliamo.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q2, Scelta A, Riga 1
-                                { text: "Non mi sento giudicata e possiamo creare tanti scenari fiction insieme!", pose: "img/Posa9.png", audio: "audio/risposte_cattive/(4)Non mi sento giudicata .mp3" } // [MODIFICA QUESTO] Audio: Ramo Q2, Scelta A, Riga 2
+                                { text: " Si, mi piace quando parliamo!", pose: "img/Posa8.png", audio: "audio/Risposte_cattive/(3)Si, mi piace quando parliamo.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q2, Scelta A, Riga 1
+                                { text: "Non mi sento giudicata e possiamo creare tanti scenari fiction insieme!", pose: "img/Posa9.png", audio: "audio/Risposte_cattive/(4)Non mi sento giudicata .mp3" } // [MODIFICA QUESTO] Audio: Ramo Q2, Scelta A, Riga 2
                         ],
                         q2_b: [
-                                { text: " ...La ragazza in biblioteca sembrava simpatica", pose: "img/Posa8.png", audio: "audio/risposte_buone/(3)La ragazza.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q2, Scelta B, Riga 1
-                                { text: "Avevamo parlato un po' di Pokèmon", pose: "img/Posa8.png", audio: "audio/risposte_buone/(4)Pokemon.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q2, Scelta B, Riga 2
+                                { text: " ...La ragazza in biblioteca sembrava simpatica", pose: "img/Posa8.png", audio: "audio/Risposte_buone/(3)La ragazza.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q2, Scelta B, Riga 1
+                                { text: "Avevamo parlato un po' di Pokèmon", pose: "img/Posa8.png", audio: "audio/Risposte_buone/(4)Pokemon.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q2, Scelta B, Riga 2
                         ],
                         q3_a: [
-                                { text: "Ieri le mie compagne hanno riso per la mia postura...", pose: "img/Posa6.png", audio: "audio/risposte_cattive/(5)ieri le mie compagne .mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q3, Scelta A, Riga 1
-                                { text: "Sono dovuta andare in bagno per piangere", pose: "img/Posa7.png", audio: "audio/risposte_cattive/(6)sono dovuta andare in bagno per piangere.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q3, Scelta A, Riga 2
+                                { text: "Ieri le mie compagne hanno riso per la mia postura...", pose: "img/Posa6.png", audio: "audio/Risposte_cattive/(5)ieri le mie compagne .mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q3, Scelta A, Riga 1
+                                { text: "Sono dovuta andare in bagno per piangere", pose: "img/Posa7.png", audio: "audio/Risposte_cattive/(6)sono dovuta andare in bagno per piangere.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q3, Scelta A, Riga 2
                         ],
                         q3_b: [
-                                { text: "…Ho sempre preferito un bot ad una persona. Davanti ad uno schermo io non devo fingere…", pose: "img/Posa6.png", audio: "audio/risposte_buone/(5)Ho sempre.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q3, Scelta B, Riga 1
-                                { text: "Ma a volte… sento l’AI come una lente sporca: ingrandisce tutto quello che non va in me.", pose: "img/Posa1.png", audio: "audio/risposte_buone/(6)Ma a volte.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q3, Scelta B, Riga 2
+                                { text: "…Ho sempre preferito un bot ad una persona. Davanti ad uno schermo io non devo fingere…", pose: "img/Posa6.png", audio: "audio/Risposte_buone/(5)Ho sempre.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q3, Scelta B, Riga 1
+                                { text: "Ma a volte… sento l’AI come una lente sporca: ingrandisce tutto quello che non va in me.", pose: "img/Posa1.png", audio: "audio/Risposte_buone/(6)Ma a volte.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q3, Scelta B, Riga 2
                         ],
                         q4_a: [
-                                { text: "Mi chiede sempre se voglio ricette, trucchi, consigli per essere “più solare”. Mai che mi proponga qualcosa sul lavoro, sul futuro, su chi potrei diventare.", pose: "img/Posa7.png", audio: "audio/risposte_cattive/(7)Mi chiede sempre.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q4, Scelta A, Riga 1
-                                { text: "È come se… la mia strada fosse già decisa...", pose: "img/Posa7.png", audio: "audio/risposte_cattive/(8)Come se.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q4, Scelta A, Riga 2
+                                { text: "Mi chiede sempre se voglio ricette, trucchi, consigli per essere “più solare”. Mai che mi proponga qualcosa sul lavoro, sul futuro, su chi potrei diventare.", pose: "img/Posa7.png", audio: "audio/Risposte_cattive/(7)Mi chiede sempre.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q4, Scelta A, Riga 1
+                                { text: "È come se… la mia strada fosse già decisa...", pose: "img/Posa7.png", audio: "audio/Risposte_cattive/(8)Come se.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q4, Scelta A, Riga 2
                         ],
                         q4_b: [
-                                { text: "L’algoritmo mi ha dato annunci di baby-sitter", pose: "img/Posa10.png", audio: "audio/risposte_buone/(7)Baby sitter.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q4, Scelta B, Riga 1
-                                { text: "Ho un diploma tecnico! Ma sembra quasi che non ci creda!", pose: "img/Posa3.png", audio: "audio/risposte_buone/(8)Ho un diploma.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q4, Scelta B, Riga 2
+                                { text: "L’algoritmo mi ha dato annunci di baby-sitter", pose: "img/Posa10.png", audio: "audio/Risposte_buone/(7)Baby sitter.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q4, Scelta B, Riga 1
+                                { text: "Ho un diploma tecnico! Ma sembra quasi che non ci creda!", pose: "img/Posa3.png", audio: "audio/Risposte_buone/(8)Ho un diploma.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q4, Scelta B, Riga 2
                         ],
                         q5_a: [
-                                { text: "Ogni giorno sento la loro voce nelle orecchie: ‘Come posso aiutarti?’. Ed inizio a pensare che sia questo il mio ruolo.", pose: "img/Posa10.png", audio: "audio/risposte_cattive/(9)Ogni giorno.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q5, Scelta A, Riga 1
-                                { text: "Aiutare. Compiacere. Esistere in funzione di qualcun altro.", pose: "img/Posa3.png", audio: "audio/risposte_cattive/(10)Aiutare, compiacere.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q5, Scelta A, Riga 2
+                                { text: "Ogni giorno sento la loro voce nelle orecchie: ‘Come posso aiutarti?’. Ed inizio a pensare che sia questo il mio ruolo.", pose: "img/Posa10.png", audio: "audio/Risposte_cattive/(9)Ogni giorno.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q5, Scelta A, Riga 1
+                                { text: "Aiutare. Compiacere. Esistere in funzione di qualcun altro.", pose: "img/Posa3.png", audio: "audio/Risposte_cattive/(10)Aiutare, compiacere.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q5, Scelta A, Riga 2
                         ],
                         q5_b: [
-                                { text: "Allora…", pose: "img/Posa4.png", audio: "audio/risposte_buone/(9)Allora.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q5, Scelta B, Riga 1
-                                { text: "Da domani voglio essere sempre me stessa! Basta con questa facciata!", pose: "img/Posa9.png", audio: "audio/risposte_buone/(10)Da domani.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q5, Scelta B, Riga 2
+                                { text: "Allora…", pose: "img/Posa4.png", audio: "audio/Risposte_buone/(9)Allora.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q5, Scelta B, Riga 1
+                                { text: "Da domani voglio essere sempre me stessa! Basta con questa facciata!", pose: "img/Posa9.png", audio: "audio/Risposte_buone/(10)Da domani.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q5, Scelta B, Riga 2
                         ],
                         q6_a: [
-                                { text: "Nessuno nemmeno si sforza di ascoltarmi. Un bot mi ha scritto che sarei ‘più approcciabile’ se sorridessi. Perché?", pose: "img/Posa5.png", audio: "audio/risposte_cattive/(11)Nessuno nemmeno.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q6, Scelta A, Riga 1
-                                { text: "Tanto vale stare qui...", pose: "img/Posa6.png", audio: "audio/risposte_cattive/(12)Tanto vale.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q6, Scelta A, Riga 2
+                                { text: "Nessuno nemmeno si sforza di ascoltarmi. Un bot mi ha scritto che sarei ‘più approcciabile’ se sorridessi. Perché?", pose: "img/Posa5.png", audio: "audio/Risposte_cattive/(11)Nessuno nemmeno.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q6, Scelta A, Riga 1
+                                { text: "Tanto vale stare qui...", pose: "img/Posa6.png", audio: "audio/Risposte_cattive/(12)Tanto vale.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q6, Scelta A, Riga 2
                         ],
                         q6_b: [
-                                { text: "...", pose: "img/Posa4.png", audio: "audio/risposte_buone/(11)Riflessione.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q6, Scelta B, Riga 1
-                                { text: "Potrei portare i miei sketchbook domani in classe, è da un bel po' che non disegno", pose: "img/Posa8.png", audio: "audio/risposte_buone/(12)Potrei portare.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q6, Scelta B, Riga 2
+                                { text: "...", pose: "img/Posa4.png", audio: "audio/Risposte_buone/(11)Riflessione.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q6, Scelta B, Riga 1
+                                { text: "Potrei portare i miei sketchbook domani in classe, è da un bel po' che non disegno", pose: "img/Posa8.png", audio: "audio/Risposte_buone/(12)Potrei portare.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q6, Scelta B, Riga 2
                         ]
                 };
 
@@ -669,5 +669,6 @@ document.addEventListener('click', () => {
         </div>
         
 </body>
+
 
 </html>
