@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="it">
+
+<head>
+        <link rel="icon" type="image/png" href="img/rot.gif">
+        <meta charset="utf-8" />
+        
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>CRTL+Z</title>
+        <style>
+                :root {
+                        --chat-h: 28vh;
+                }
+
+                html,
+                body {
+                        height: 100%;
+                        margin: 0;
+                        font-family: system-ui, SegoeUI, Roboto, Arial;
+                        background: #000;
+                }
+
+                /* scena / sfondo (iniziale) */
+                .scene {
+                        width: 100%;
+                        height: 100%;
+                        background: url('img/sfondo.gif') center/cover no-repeat;
+                        background-position: 40% center;
+                        position: relative;
+                        overflow: hidden;
+                        transition: background 800ms ease;
+                }
+
+                /* personaggio: appare lentamente */
+                #character {
+                        position: absolute;
+                        left: 50%;
+                        bottom: 0vh;
+                        transform: translateX(-50%) translateY(18px);
+                        max-width: 190%;
+                        max-height: 90vh;
+                        cursor: pointer;
+                        user-select: none;
+                        -webkit-user-drag: none;
+                        opacity: 0;
+                        transition: opacity 2000ms ease, transform 600ms ease;
+                }
+
+                #character.visible {
+                        opacity: 1;
+                        transform: translateX(-50%) translateY(0);
+                }
+
+                /* chat box (nascosta all'inizio) */
+                #chatbox {
+                        position: absolute;
+                        left: 50%;
+                        bottom: 0;
+                        transform: translateX(-50%) translateY(10px);
+                        width: 92%;
+                        max-width: 1100px;
+                        height: var(--chat-h);
+                        background: linear-gradient(180deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.75));
+                        border-radius: 14px 14px 0 0;
+                        border-style: solid;
+                        border-color: hsl(0, 0%, 43%);
+                        padding: 16px 18px;
+                        box-sizing: border-box;
+                        color: #fff;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 10px;
+                        opacity: 0;
+                        pointer-events: none;
+                        transition: opacity 320ms ease, transform 320ms ease;
+                        backdrop-filter: blur(6px);
+                }
+
+                #chatbox.show {
+                        opacity: 1;
+                        pointer-events: auto;
+                        transform: translateX(-50%) translateY(0);
+                }
+
+                .text {
+                        flex: 1;
+                        overflow: auto;
+                        line-height: 2;
+                        text-align: center;
+                }
+
+                .controls {
+                        display: flex;
+                        gap: 10px;
+                        justify-content: center;
+                        align-items: center;
+                        text-align: center;
+                        flex-direction: column;
+                }
+
+                .btn {
+                        background: #9fa9b3;
+                        color: #000000;
+                        padding: 8px 12px;
+                        border-radius: 4px;
+                        border: none;
+                        cursor: pointer;
+                        font-weight: 600;
+                        flex-direction: column;
+                }
+
+                .btn.alt {
+                        background: rgba(255, 255, 255, 0.12);
+                        color: #fff;
+                        border-radius: 4px;
+                }
+
+                /* scelta multipla */
+                .choices {
+                        display: flex;
+                        gap: 10px;
+                        align-items: center;
+                        justify-content: center;
+                        width: 100%;
+                        align-content: center;
+                        gap: 10px;
+                        flex-wrap: wrap;
+                }
+
+                .choice-btn {
+                        display: flex;
+                        width: 80%;
+                        max-width: 400px;
+                        margin: 0 auto;
+                        padding: 15px;
+                        border-radius: 4px;
+                        border: 2px solid rgba(255, 255, 255, 0.12);
+                        background: rgba(255, 255, 255, 0.04);
+                        color: #fff;
+                        cursor: pointer;
+                        font-weight: 600;
+                        white-space: normal;
+                        overflow: visible;
+                        text-overflow: unset;
+                        word-break: break-word;
+                        text-align: center;
+                        align-content: center;
+                        margin-inline: auto;
+                        display: block;
+                        margin-inline-start: auto;
+                        flex-direction: column;
+                }
+
+                .choice-btn:hover {
+                        border-color: #1e90ff;
+                }
+
+                @media(max-width:700px) {
+
+                        #chatbox {
+                                height: 34vh;
+                                font-size: 0.98rem;
+                                align-items: center;
+                                align-content: center;
+                        }
+
+                        .choices {
+                                display: flex;
+                                gap: 10px;
+                                align-items: center;
+                                justify-content: center;
+                                width: 100%;
+                                align-content: center;
+                        }
+                }
+
+                @media(max-width:380px) {
+
+
+                        .scene {
+                                width: 100%;
+                                height: 100%;
+                                background: url('img/sfondo.gif') center/cover no-repeat;
+                                background-position: 45% center;
+                        }
+
+                        #chatbox {
+                                height: 3vh;
+                                font-size: 0.95rem;
+                        }
+
+                        .btn {
+                                align-items: center;
+                                flex-direction: column;
+                                align-content: center;
+                        }
+
+                        .choice-btn {
+                                font-size: 0.9rem;
+                                padding: 6px 10px;
+                                align-items: center;
+                                flex-direction: column;
+                                align-content: center;
+                        }
+
+                        .choices {
+                                display: flex;
+                                gap: 10px;
+                                align-items: center;
+                                justify-content: center;
+                                width: 100%;
+                                align-content: center;
+                        }
+
+                        #character {
+                                height: 60vh !important;
+                                width: auto !important;
+                                max-height: none !important;
+                                max-width: 190% !important;
+                                transform: translateX(-50%) scale(1) !important;
+                                min-height: 200px;
+                                height: min(60vh, 80vw);
+                        }
+
+                }
+
+                #endOverlay {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: black;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                        font-size: 2rem;
+                        font-weight: bold;
+                        opacity: 0;
+                        pointer-events: none;
+                        transition: opacity 2s ease;
+                        z-index: 999;
+                }
+
+                #endOverlay.show {
+                        opacity: 1;
+                        pointer-events: auto;
+                }
+        </style>
+</head>
+
+<body>
+        <div class="scene" id="scene">
+                  <img id="character" src="img/Posa6.png" alt="Personaggio">
+                 <div id="chatbox" aria-hidden="true">
+                          <div class="text" id="dialogText"></div>
+                          <div class="controls" id="controls">
+                                   <div id="standardControls">
+                                            <button class="btn alt" id="skipBtn">Salta intro</button>
+                                            <button class="btn" id="nextBtn">Avanti</button>
+                                           </div>
+                                   <div id="choiceControls" style="display:none;">
+                                            <div class="choices" id="choicesContainer"></div>
+                                           </div>
+                                  </div>
+                         </div>
+                </div>
+        
+        <audio loop autoplay id="player">
+                
+                <source src="https://files.catbox.moe/gc557m.mp3" type="audio/mpeg">
+        </audio>
+        
+        <audio id="dialogPlayer"></audio>
+
+        
+        
+        <script>
+
+        const bgMusic = document.getElementById('player');
+bgMusic.volume = 0.2; // Imposta il volume al 20%
+
+document.addEventListener('click', () => {
+  const audio = document.getElementById('player');
+  audio.play();
+}, { once: true });
+
+                /* ---------- CONFIG / RISORSE ---------- */
+                const SCENE = document.getElementById('scene');
+                const character = document.getElementById('character');
+                const chatbox = document.getElementById('chatbox');
+                const dialogText = document.getElementById('dialogText');
+                const nextBtn = document.getElementById('nextBtn');
+                const skipBtn = document.getElementById('skipBtn');
+                const standardControls = document.getElementById('standardControls');
+                const choiceControls = document.getElementById('choiceControls');
+                const choicesContainer = document.getElementById('choicesContainer');
+                const dialogPlayer = document.getElementById('dialogPlayer'); // Riferimento al nuovo player
+
+                // tempi configurabili (ms)
+                const CHARACTER_APPEAR_DELAY = 1200;
+                const STATIC_INTRO_DISPLAY_MS = 2200;
+
+                /* ---------- STATO ---------- */
+                const state = {
+                        phase: 'waiting',
+                        qIndex: 0,
+                        branchId: null,
+                        lineIdx: 0
+                };
+                // Tracciamento scelte
+                const choiceStats = {};
+                let totalChoices = 0;
+
+                let introClicked = false;
+                let presentedOnce = false;
+
+                /* ---------- CONTENUTI (AGGIUNTI CAMPI AUDIO CON COMMENTI PER MODIFICA) ---------- */
+
+                const STATIC_INTRO = {
+                        text: "Non riesco a dormire...",
+                        pose: "img/Posa6.png",
+                        // [MODIFICA QUESTO] Percorso file audio: Intro (primo testo)
+                        audio: "audio/domande/Non riesco a dormire.mp3"
+                };
+
+                const QUESTIONS = [
+                        {
+                                id: "q1",
+                                text: "Cosa dovrei fare?",
+                                pose: "img/Posa6.png",
+                                // [MODIFICA QUESTO] Percorso file audio: Domanda 1
+                                audio: "audio/domande/Cosa dovrei fare.mp3",
+                                choices: [
+                                        { id: "q1_a", label: "Scrivi su Character.ai" },
+                                        { id: "q1_b", label: "Distenditi e rilassati" }
+                                ]
+                        },
+                        {
+                                id: "q2",
+                                text: "Perchè dovrei andare a scuola domani?",
+                                pose: "img/Posa5.png",
+                                // [MODIFICA QUESTO] Percorso file audio: Domanda 2
+                                audio: "audio/domande/Perché dovrei.mp3",
+                                choices: [
+                                        { id: "q2_a", label: "Meglio la compagnia di Character.ai" },
+                                        { id: "q2_b", label: "Potrei provare a parlare con i compagni" }
+                                ]
+                        },
+                        {
+                                id: "q3",
+                                text: "Qui dentro... non mi ferisce nessuno, nessuno ride di me o mi ignora...",
+                                pose: "img/Posa10.png",
+                                // [MODIFICA QUESTO] Percorso file audio: Domanda 3
+                                audio: "audio/domande/Qui dentro.mp3",
+                                choices: [
+                                        { id: "q3_a", label: "Le persone sono cosi noiose e crudeli senza motivo" },
+                                        { id: "q3_b", label: "Qui dentro io non vivo, sopravvivo." }
+                                ]
+                        },
+                        {
+                                id: "q4",
+                                text: "Vorrei trovarmi un lavoro... ma CarrierMatch.ai dice che non sono abbastanza bella.",
+                                pose: "img/Posa7.png",
+                                // [MODIFICA QUESTO] Percorso file audio: Domanda 4
+                                audio: "audio/domande/Vorrei trovarmi un lavoro.mp3",
+                                choices: [
+                                        { id: "q4_a", label: "E' vero, dovrei seguire le sue raccomandazioni." },
+                                        { id: "q4_b", label: "Ma non è giusto! Perché dovrei essere giudicata da una AI?!" }
+                                ]
+                        },
+
+                        {
+                                id: "q5",
+                                text: "Parlare con le AI è facile. Sono sempre gentili, sempre pronte. Io invece… io no. E allora cerco di diventare come loro, docile, accomodante.",
+                                pose: "img/Posa5.png",
+                                // [MODIFICA QUESTO] Percorso file audio: Domanda 5
+                                audio: "audio/domande/Parlare con le AI.mp3",
+                                choices: [
+                                        { id: "q5_a", label: "Così forse qualcuno mi ascolterà…" },
+                                        { id: "q5_b", label: "No… non deve per forza essere così!" }
+                                ]
+                        },
+                        {
+                                id: "q6",
+                                text: "Sono troppo... sbagliata per gli altri?",
+                                pose: "img/Posa7.png",
+                                // [MODIFICA QUESTO] Percorso file audio: Domanda 6
+                                audio: "audio/domande/Sono troppo.mp3",
+                                choices: [
+                                        { id: "q6_a", label: "Non voglio essere sempre io a cercare gli altri" },
+                                        { id: "q6_b", label: "Per alcuni forse si, per molti altri no" }
+                                ]
+                        }
+                ];
+
+                // Mappa ID → testo della scelta (resta invariato)
+                const choiceLabels = {};
+                QUESTIONS.forEach(q => {
+                        q.choices.forEach(ch => {
+                                choiceLabels[ch.id] = ch.label;
+                        });
+                });
+
+
+                // AGGIUNTI CAMPI AUDIO PER OGNI RIGA DI DIALOGO (BRANCHES)
+                const BRANCHES = {
+                        q1_a: [
+                                { text: "...Si, forse mi aiuterà un po'", pose: "img/Posa4.png", audio: "audio/risposte_cattive/(1)Si, forse mi aiutera un po'.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q1, Scelta A, Riga 1
+                                { text: "Character.ai, facciamo role-play!", pose: "img/Posa9.png", audio: "audio/risposte_cattive/(2)Facciamo un role play!.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q1, Scelta A, Riga 2
+                        ],
+                        q1_b: [
+                                { text: "Ugh, mi gira la testa!", pose: "img/Posa3.png", audio: "audio/risposte_buone/(1)Ugh.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q1, Scelta B, Riga 1
+                                { text: "...", pose: "img/Posa4.png", audio: "audio/risposte_buone/(2)pausa.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q1, Scelta B, Riga 2
+                        ],
+                        q2_a: [
+                                { text: " Si, mi piace quando parliamo!", pose: "img/Posa8.png", audio: "audio/risposte_cattive/(3)Si, mi piace quando parliamo.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q2, Scelta A, Riga 1
+                                { text: "Non mi sento giudicata e possiamo creare tanti scenari fiction insieme!", pose: "img/Posa9.png", audio: "audio/risposte_cattive/(4)Non mi sento giudicata .mp3" } // [MODIFICA QUESTO] Audio: Ramo Q2, Scelta A, Riga 2
+                        ],
+                        q2_b: [
+                                { text: " ...La ragazza in biblioteca sembrava simpatica", pose: "img/Posa8.png", audio: "audio/risposte_buone/(3)La ragazza.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q2, Scelta B, Riga 1
+                                { text: "Avevamo parlato un po' di Pokèmon", pose: "img/Posa8.png", audio: "audio/risposte_buone/(4)Pokemon.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q2, Scelta B, Riga 2
+                        ],
+                        q3_a: [
+                                { text: "Ieri le mie compagne hanno riso per la mia postura...", pose: "img/Posa6.png", audio: "audio/risposte_cattive/(5)ieri le mie compagne .mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q3, Scelta A, Riga 1
+                                { text: "Sono dovuta andare in bagno per piangere", pose: "img/Posa7.png", audio: "audio/risposte_cattive/(6)sono dovuta andare in bagno per piangere.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q3, Scelta A, Riga 2
+                        ],
+                        q3_b: [
+                                { text: "…Ho sempre preferito un bot ad una persona. Davanti ad uno schermo io non devo fingere…", pose: "img/Posa6.png", audio: "audio/risposte_buone/(5)Ho sempre.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q3, Scelta B, Riga 1
+                                { text: "Ma a volte… sento l’AI come una lente sporca: ingrandisce tutto quello che non va in me.", pose: "img/Posa1.png", audio: "audio/risposte_buone/(6)Ma a volte.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q3, Scelta B, Riga 2
+                        ],
+                        q4_a: [
+                                { text: "Mi chiede sempre se voglio ricette, trucchi, consigli per essere “più solare”. Mai che mi proponga qualcosa sul lavoro, sul futuro, su chi potrei diventare.", pose: "img/Posa7.png", audio: "audio/risposte_cattive/(7)Mi chiede sempre.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q4, Scelta A, Riga 1
+                                { text: "È come se… la mia strada fosse già decisa...", pose: "img/Posa7.png", audio: "audio/risposte_cattive/(8)Come se.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q4, Scelta A, Riga 2
+                        ],
+                        q4_b: [
+                                { text: "L’algoritmo mi ha dato annunci di baby-sitter", pose: "img/Posa10.png", audio: "audio/risposte_buone/(7)Baby sitter.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q4, Scelta B, Riga 1
+                                { text: "Ho un diploma tecnico! Ma sembra quasi che non ci creda!", pose: "img/Posa3.png", audio: "audio/risposte_buone/(8)Ho un diploma.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q4, Scelta B, Riga 2
+                        ],
+                        q5_a: [
+                                { text: "Ogni giorno sento la loro voce nelle orecchie: ‘Come posso aiutarti?’. Ed inizio a pensare che sia questo il mio ruolo.", pose: "img/Posa10.png", audio: "audio/risposte_cattive/(9)Ogni giorno.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q5, Scelta A, Riga 1
+                                { text: "Aiutare. Compiacere. Esistere in funzione di qualcun altro.", pose: "img/Posa3.png", audio: "audio/risposte_cattive/(10)Aiutare, compiacere.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q5, Scelta A, Riga 2
+                        ],
+                        q5_b: [
+                                { text: "Allora…", pose: "img/Posa4.png", audio: "audio/risposte_buone/(9)Allora.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q5, Scelta B, Riga 1
+                                { text: "Da domani voglio essere sempre me stessa! Basta con questa facciata!", pose: "img/Posa9.png", audio: "audio/risposte_buone/(10)Da domani.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q5, Scelta B, Riga 2
+                        ],
+                        q6_a: [
+                                { text: "Nessuno nemmeno si sforza di ascoltarmi. Un bot mi ha scritto che sarei ‘più approcciabile’ se sorridessi. Perché?", pose: "img/Posa5.png", audio: "audio/risposte_cattive/(11)Nessuno nemmeno.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q6, Scelta A, Riga 1
+                                { text: "Tanto vale stare qui...", pose: "img/Posa6.png", audio: "audio/risposte_cattive/(12)Tanto vale.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q6, Scelta A, Riga 2
+                        ],
+                        q6_b: [
+                                { text: "...", pose: "img/Posa4.png", audio: "audio/risposte_buone/(11)Riflessione.mp3" }, // [MODIFICA QUESTO] Audio: Ramo Q6, Scelta B, Riga 1
+                                { text: "Potrei portare i miei sketchbook domani in classe, è da un bel po' che non disegno", pose: "img/Posa8.png", audio: "audio/risposte_buone/(12)Potrei portare.mp3" } // [MODIFICA QUESTO] Audio: Ramo Q6, Scelta B, Riga 2
+                        ]
+                };
+
+                const FINAL_STATIC = {
+                        text: "E' arrivata l'alba.",
+                        pose: "img/Posa4.png",
+                        changeBackgroundTo: "img/sfondo2.jpg",
+                        // [MODIFICA QUESTO] Percorso file audio: Finale
+                        audio: "audio/domande/Arrivata l'alba.mp3"
+                };
+
+                /* ---------- UTILITY UI E AUDIO ---------- */
+                function setPose(src) {
+                        if (!src) return;
+                        character.src = src;
+                }
+
+                // NUOVA FUNZIONE: RIPRODUCE UN AUDIO SPECIFICO E FERMA IL PRECEDENTE
+                function playDialogAudio(src) {
+                        // Ferma e resetta la riproduzione precedente
+                        dialogPlayer.pause();
+                        dialogPlayer.currentTime = 0;
+                        if (!src) return;
+
+                        dialogPlayer.src = src;
+                        // Riproduce l'audio (potrebbe fallire se l'utente non ha interagito con la pagina)
+                        dialogPlayer.play().catch(e => console.log("Audio playback failed (user interaction required):", e));
+                }
+
+                function showChat() {
+                        chatbox.classList.add('show');
+                        chatbox.setAttribute('aria-hidden', 'false');
+                }
+
+                function hideChat() {
+                        chatbox.classList.remove('show');
+                        chatbox.setAttribute('aria-hidden', 'true');
+                }
+
+                function changeBackground(src) {
+                        if (!src) return;
+                        SCENE.style.backgroundImage = `url('${src}')`;
+                }
+
+
+                /* ---------- FLUSSO (LOGICA DI GIOCO) ---------- */
+                // mostra il personaggio dopo un ritardo
+                window.addEventListener('load', () => {
+                        setTimeout(() => {
+                                character.classList.add('visible');
+                                // posa iniziale
+                                setPose('img/Posa4.png');
+                        }, CHARACTER_APPEAR_DELAY);
+                });
+
+                // click sul personaggio:
+                character.addEventListener('click', () => {
+                        if (!introClicked) {
+                                // primo click ever: apri chat e mostra presentazione
+                                introClicked = true;
+                                showChat();
+                                state.phase = 'presented';
+                                setPose(STATIC_INTRO.pose);
+                                dialogText.textContent = STATIC_INTRO.text;
+                                playDialogAudio(STATIC_INTRO.audio); // RIPRODUCE AUDIO INTRO
+                                presentedOnce = true;
+                        } else if (state.phase === 'presented') {
+                                // secondo click: presentazione completata, vai alla prima domanda
+                                presentQuestion(0);
+                        }
+                });
+
+                // skip intro: salta direttamente alla prima domanda
+                skipBtn.addEventListener('click', () => {
+                        if (!introClicked) introClicked = true;
+                        showChat();
+                        presentQuestion(0);
+                });
+
+                // mostra domanda index i (0..3)
+                function presentQuestion(i) {
+                        if (i < 0 || i >= QUESTIONS.length) return finishConversation();
+                        state.qIndex = i;
+                        state.phase = 'question';
+                        state.lineIdx = 0;
+                        const q = QUESTIONS[i];
+                        setPose(q.pose);
+                        dialogText.textContent = q.text;
+                        playDialogAudio(q.audio); // RIPRODUCE AUDIO DOMANDA
+
+                        // costruisci pulsanti scelta
+                        choicesContainer.innerHTML = '';
+                        q.choices.forEach(ch => {
+                                const btn = document.createElement('button');
+                                btn.className = 'choice-btn';
+                                btn.textContent = ch.label;
+                                btn.dataset.choiceId = ch.id;
+                                btn.addEventListener('click', onChoice);
+                                choicesContainer.appendChild(btn);
+                        });
+
+                        // mostra controlli scelta
+                        standardControls.style.display = 'none';
+                        choiceControls.style.display = 'block';
+                        nextBtn.disabled = false;
+                }
+
+                // gestione scelta: imposta branch e mostra la prima riga del ramo
+                function onChoice(e) {
+                        const choiceId = e.currentTarget.dataset.choiceId;
+                        state.branchId = choiceId;
+                        state.phase = 'branch';
+                        state.lineIdx = 0;
+
+                        totalChoices++;
+                        if (!choiceStats[choiceId]) choiceStats[choiceId] = 0;
+                        choiceStats[choiceId]++;
+
+                        // torna ai controlli standard per avanzare
+                        choiceControls.style.display = 'none';
+                        standardControls.style.display = 'block';
+
+                        // mostra prima riga del ramo scelto
+                        showBranchLine();
+                }
+
+                // mostra riga corrente del branch; avanzamento via Next
+                function showBranchLine() {
+                        const lines = BRANCHES[state.branchId] || [];
+                        if (state.lineIdx >= lines.length) {
+                                playDialogAudio(null); // Ferma l'audio prima di passare alla domanda successiva
+                                // finito il ramo per questa domanda -> passa alla domanda successiva dopo un breve delay
+                                setTimeout(() => {
+                                        const nextQ = state.qIndex + 1;
+                                        if (nextQ < QUESTIONS.length) presentQuestion(nextQ);
+                                        else finishConversation();
+                                }, 420);
+                                return;
+                        }
+                        const line = lines[state.lineIdx];
+                        setPose(line.pose);
+                        dialogText.textContent = line.text;
+                        playDialogAudio(line.audio); // RIPRODUCE AUDIO RIGA DIALOGO
+                }
+
+                // Avanzamento con il pulsante Avanti
+                nextBtn.addEventListener('click', () => {
+                        if (!chatbox.classList.contains('show')) return;
+                        if (state.phase === 'branch') {
+                                state.lineIdx++;
+                                showBranchLine();
+                        } else if (state.phase === 'question') {
+                                // se preme Avanti senza scegliere, ripeto la domanda e l'audio
+                                const q = QUESTIONS[state.qIndex];
+                                setPose(q.pose);
+                                dialogText.textContent = q.text;
+                                playDialogAudio(q.audio); // RIPRODUCE ANCORA AUDIO DOMANDA
+                        } else if (state.phase === 'presented') {
+                                // se l'utente vuole avanzare con il tasto Avanti dopo la presentazione, vai alla domanda 0
+                                presentQuestion(0);
+                        }
+                });
+                // scorciatoia tastiera: Enter/Space come Avanti (se i controlli standard sono visibili)
+                document.addEventListener('keydown', (e) => {
+                        if ((e.key === 'Enter' || e.key === ' ') && standardControls.style.display !== 'none') {
+                                e.preventDefault();
+                                nextBtn.click();
+                        }
+                });
+
+                // fine della conversazione: mostra dialogo statico finale e cambia sfondo
+                function finishConversation() {
+                        state.phase = 'final';
+                        setPose(FINAL_STATIC.pose);
+                        dialogText.textContent = FINAL_STATIC.text;
+                        nextBtn.disabled = true;
+                        playDialogAudio(FINAL_STATIC.audio); // RIPRODUCE AUDIO FINALE
+
+                        // cambia sfondo se specificato
+                        if (FINAL_STATIC.changeBackgroundTo) {
+                                changeBackground(FINAL_STATIC.changeBackgroundTo);
+                        }
+
+                        // mostra overlay finale
+                        const endOverlay = document.getElementById('endOverlay');
+                        setTimeout(() => {
+                                endOverlay.classList.add('show');
+
+                                // Calcolo percentuali con testi reali
+                                let report = "Statistiche delle scelte:\n";
+                                for (const choiceId in choiceStats) {
+                                        const percent = ((choiceStats[choiceId] / totalChoices) * 100).toFixed(1);
+                                        const label = choiceLabels[choiceId] || choiceId; // usa il testo, fallback ID
+                                        report += `${label}: ${percent}%\n`;
+                                }
+
+                                // Mostra sotto la scritta finale
+                                const endMessage = document.querySelector('.endMessage');
+                                const statsDiv = document.createElement('div');
+                                statsDiv.style.marginTop = "20px";
+                                statsDiv.style.fontSize = "1.2rem";
+                                statsDiv.style.whiteSpace = "pre-line"; // mantiene gli a capo
+                                statsDiv.textContent = report;
+                                endMessage.appendChild(statsDiv);
+
+                        }, 1800);
+                }
+
+                // iniziale: chat nascosta finché non si clicca personaggio o skip
+                hideChat();
+        </script>
+        <div id="endOverlay">
+                 <div class="endMessage">Grazie per aver giocato.</div>
+        </div>
+        
+</body>
+
+</html>
