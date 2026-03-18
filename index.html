@@ -287,20 +287,25 @@
         <!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  const supabase = supabase.createClient(
-    "https://cyradbqbckgrupjttxhm.supabase.co",
-    "sb_publishable_vYN95FUQ2Gn_RWe8t_P5Zg_0Zd0FqIG"
-  );
-
-  async function registraScelta(scenario, scelta) {
-    const { error } = await supabase
-      .from("CTRL-Z")   // nome della tua tabella
-      .insert([{ scena: scenario, scelta: scelta }]);
-
-    if (error) {
-      console.error("Errore Supabase:", error);
-    }
+  if (!window.__supabaseClient) {
+    window.__supabaseClient = window.supabase.createClient(
+      "https://cyradbqbckgrupjttxhm.supabase.co",
+      "sb_publishable_vYN95FUQ2Gn_RWe8t_P5Zg_0Zd0FqIG"
+    );
   }
+  const supabaseClient = window.__supabaseClient;
+
+  // Rendi la funzione globale in modo che onChoice la trovi sempre
+  window.registraScelta = async function(scenario, scelta) {
+    try {
+      const { error } = await supabaseClient
+        .from("CTRL-Z")
+        .insert([{ scena: scenario, scelta: scelta }]);
+      if (error) console.error("Errore Supabase:", error);
+    } catch (err) {
+      console.error("registraScelta failed:", err);
+    }
+  };
 </script>
 
         
