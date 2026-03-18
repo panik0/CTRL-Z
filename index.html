@@ -284,7 +284,25 @@
         
         <audio id="dialogPlayer"></audio>
 
-        
+        <!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const supabase = supabase.createClient(
+    "https://cyradbqbckgrupjttxhm.supabase.co",
+    "sb_publishable_vYN95FUQ2Gn_RWe8t_P5Zg_0Zd0FqIG"
+  );
+
+  async function registraScelta(scenario, scelta) {
+    const { error } = await supabase
+      .from("CTRL-Z")   // nome della tua tabella
+      .insert([{ scena: scenario, scelta: scelta }]);
+
+    if (error) {
+      console.error("Errore Supabase:", error);
+    }
+  }
+</script>
+
         
         <script>
 
@@ -580,6 +598,10 @@ document.addEventListener('click', () => {
                         totalChoices++;
                         if (!choiceStats[choiceId]) choiceStats[choiceId] = 0;
                         choiceStats[choiceId]++;
+
+                            // INVIA A SUPABASE
+    registraScelta(QUESTIONS[state.qIndex].id, choiceId);
+
 
                         // torna ai controlli standard per avanzare
                         choiceControls.style.display = 'none';
