@@ -661,45 +661,102 @@ document.addEventListener('click', () => {
                 });
 
                 // fine della conversazione: mostra dialogo statico finale e cambia sfondo
-                function finishConversation() {
-                        state.phase = 'final';
-                        setPose(FINAL_STATIC.pose);
-                        dialogText.textContent = FINAL_STATIC.text;
-                        nextBtn.disabled = true;
-                        playDialogAudio(FINAL_STATIC.audio); // RIPRODUCE AUDIO FINALE
+// fine della conversazione: mostra dialogo statico finale e cambia sfondo
+function finishConversation() {
+  state.phase = 'final';
+  setPose(FINAL_STATIC.pose);
+  dialogText.textContent = FINAL_STATIC.text;
+  nextBtn.disabled = true;
+  playDialogAudio(FINAL_STATIC.audio); // RIPRODUCE AUDIO FINALE
 
-                        // cambia sfondo se specificato
-                        if (FINAL_STATIC.changeBackgroundTo) {
-                                changeBackground(FINAL_STATIC.changeBackgroundTo);
-                        }
+  // cambia sfondo se specificato
+  if (FINAL_STATIC.changeBackgroundTo) {
+    changeBackground(FINAL_STATIC.changeBackgroundTo);
+  }
 
-                        // mostra overlay finale
-                        const endOverlay = document.getElementById('endOverlay');
-                        setTimeout(() => {
-                                endOverlay.classList.add('show');
+  // mostra overlay finale
+  const endOverlay = document.getElementById('endOverlay');
+  setTimeout(() => {
+    endOverlay.classList.add('show');
 
-                                // Calcolo percentuali con testi reali
-                                let report = "Statistiche delle scelte:\n";
-                                for (const choiceId in choiceStats) {
-                                        const percent = ((choiceStats[choiceId] / totalChoices) * 100).toFixed(1);
-                                        const label = choiceLabels[choiceId] || choiceId; // usa il testo, fallback ID
-                                        report += `${label}: ${percent}%\n`;
-                                }
+    // invece di calcolare le percentuali locali qui,
+    // chiamiamo la funzione che legge i dati da Supabase
+    // e costruisce il report globale
+    showGlobalStatsAndOverlay();
 
-                                // Mostra sotto la scritta finale
-                                const endMessage = document.querySelector('.endMessage');
-                                const statsDiv = document.createElement('div');
-                                statsDiv.style.marginTop = "20px";
-                                statsDiv.style.fontSize = "1.2rem";
-                                statsDiv.style.whiteSpace = "pre-line"; // mantiene gli a capo
-                                statsDiv.textContent = report;
-                                endMessage.appendChild(statsDiv);
-
-                        }, 1800);
-                }
+  }, 1800);
+}
 
                 // iniziale: chat nascosta finché non si clicca personaggio o skip
                 hideChat();
+
+async function showGlobalStatsAndOverlay() {
+  // prendi tutte le righe (semplice e chiaro)
+  const { data, error } = await supabaseClient
+    .from('CTRL-Z')
+    .select('scelta');
+
+  if (error) {
+    console.error('Errore fetch Supabase:', error);
+    showLocalStatsFallback();
+    return;
+  }
+
+  // conta le occorrenze per scelta
+  const counts = {};
+  data.forEach(row => {
+    const key = row.scelta || 'Sconosciuta';
+    counts[key] = (counts[key] || 0) + 1;
+  });
+
+  const total = data.length || 0;
+
+  // costruisci il report testuale
+  let report = "Statistiche globali delle scelte:\n";
+  if (total === 0) {
+    report += "Nessuna scelta registrata ancora.";
+  } else {
+    for (const [choiceId, cnt] of Object.entries(counts)) {
+      const percent = ((cnt / total) * 100).toFixed(1);
+      // choiceLabels è opzionale: se hai una mappa id->label usala, altrimenti mostra l'id
+      const label = (typeof choiceLabels !== 'undefined' && choiceLabels[choiceId]) ? choiceLabels[choiceId] : choiceId;
+      report += `${label}: ${percent}% (${cnt} su ${total})\n`;
+    }
+  }
+
+  // mostra overlay e report (adatta ai tuoi elementi HTML)
+  const endOverlay = document.getElementById('endOverlay');
+  const endMessage = document.querySelector('.endMessage') || document.body;
+  const prev = endMessage.querySelector('.globalStats');
+  if (prev) prev.remove();
+  const statsDiv = document.createElement('div');
+  statsDiv.className = 'globalStats';
+  statsDiv.style.marginTop = "20px";
+  statsDiv.style.fontSize = "1.1rem";
+  statsDiv.style.whiteSpace = "pre-line";
+  statsDiv.textContent = report;
+  endMessage.appendChild(statsDiv);
+  if (endOverlay) endOverlay.classList.add('show');
+}
+function showLocalStatsFallback() {
+  let report = "Statistiche delle scelte (locale):\n";
+  for (const choiceId in choiceStats) {
+    const percent = ((choiceStats[choiceId] / totalChoices) * 100).toFixed(1);
+    const label = (typeof choiceLabels !== 'undefined' && choiceLabels[choiceId]) ? choiceLabels[choiceId] : choiceId;
+    report += `${label}: ${percent}%\n`;
+  }
+  const endOverlay = document.getElementById('endOverlay');
+  const endMessage = document.querySelector('.endMessage') || document.body;
+  const statsDiv = document.createElement('div');
+  statsDiv.style.marginTop = "20px";
+  statsDiv.style.fontSize = "1.1rem";
+  statsDiv.style.whiteSpace = "pre-line";
+  statsDiv.textContent = report;
+  endMessage.appendChild(statsDiv);
+  if (endOverlay) endOverlay.classList.add('show');
+}
+
+                
         </script>
         <div id="endOverlay">
                  <div class="endMessage">Grazie per aver giocato.</div>
